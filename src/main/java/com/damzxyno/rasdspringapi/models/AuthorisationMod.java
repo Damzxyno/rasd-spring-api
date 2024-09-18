@@ -3,7 +3,7 @@ package com.damzxyno.rasdspringapi.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Authorisation {
+public class AuthorisationMod {
     private SecureModel staticMod = new SecureModel();
     private List<SecureModel> relativeMod = new ArrayList<>();
 
@@ -19,5 +19,8 @@ public class Authorisation {
 
     public void setRelativeMod(List<SecureModel> relativeMod) {
         this.relativeMod = relativeMod;
+    }
+    public void setStaticMod(SecureModel staticMod) {
+        this.staticMod = staticMod;
     }
 }

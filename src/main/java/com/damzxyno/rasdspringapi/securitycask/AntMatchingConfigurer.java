@@ -1,22 +1,19 @@
 package com.damzxyno.rasdspringapi.securitycask;
 
-import com.damzxyno.rasdspringapi.core.services.SecurityMapperService;
-import org.springframework.util.PathMatcher;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AntMatchingConfigurer {
     private final HttpSecurity httpSecurity;
-    private final SecurityMapperService mapperService;
-    private final PathMatcher pathMatcher;
     private String [] patterns;
-    public AntMatchingConfigurer(HttpSecurity httpSecurity, PathMatcher pathMatcher, SecurityMapperService securityMapperService) {
+    public AntMatchingConfigurer(HttpSecurity httpSecurity) {
         this.httpSecurity = httpSecurity;
-        this.pathMatcher = pathMatcher;
-        this.mapperService = securityMapperService;
     }
 
+    private AntMatchingConfigurer newInstance(){
+        return new AntMatchingConfigurer(httpSecurity);
+    }
 
     public AntMatchingConfigurer antMatchers(String... antPatterns){
         patterns = antPatterns;
@@ -24,62 +21,34 @@ public class AntMatchingConfigurer {
     }
 
     public AntMatchingConfigurer permitAll(){
-        Arrays.stream(patterns).forEach(pattern -> {
-            mapperService.getSecurityDocumentation().getPaths().forEach((urlPath, pathitem) ->{
-                if (pathMatcher.match(pattern, urlPath)){
-                    mapperService.setPermissionFree(pathitem);
-                }
-            });
-        });
-        return this;
+        httpSecurity.getSecurityMapperService().permitAllPatterns(patterns);
+        return this.newInstance();
     }
 
     public AntMatchingConfigurer hasRole(String role){
-        Arrays.stream(patterns).forEach(pattern -> {
-            mapperService.getSecurityDocumentation().getPaths().forEach((urlPath, pathitem) ->{
-                if (pathMatcher.match(pattern, urlPath)){
-                    mapperService.setOperationHasRole(role, pathitem);
-                }
-            });
-        });
-        return this;
+        httpSecurity.getSecurityMapperService().assignRoleToPatterns(patterns, role);
+        return this.newInstance();
     }
 
     public AntMatchingConfigurer hasAnyRole(String... roles){
-        List<String> roleList = Arrays.stream(roles).collect(Collectors.toList());
-        Arrays.stream(patterns).forEach(pattern -> {
-            mapperService.getSecurityDocumentation().getPaths().forEach((urlPath, pathitem) ->{
-                if (pathMatcher.match(pattern, urlPath)){
-                    mapperService.setOperationMultipleRoles(roleList, pathitem);
-                }
-            });
-        });
-        return this;
+        httpSecurity.getSecurityMapperService().assignRoleArrayToPatterns(patterns, roles);
+        return this.newInstance();
     }
 
     public AntMatchingConfigurer hasAuthority(String authority){
-        Arrays.stream(patterns).forEach(pattern -> {
-            mapperService.getSecurityDocumentation().getPaths().forEach((urlPath, pathitem) ->{
-                if (pathMatcher.match(pattern, urlPath)){
-                    mapperService.setOperationHasAuthority(authority, pathitem);
-                }
-            });
-        });
-        return this;
+        httpSecurity.getSecurityMapperService().assignPermissionToPatterns(patterns, authority);
+        return this.newInstance();
     }
 
     public AntMatchingConfigurer hasAnyAuthority(String... authorities){
-        List<String> authoritiesList = Arrays.stream(authorities ).collect(Collectors.toList());
-        Arrays.stream(patterns).forEach(pattern -> {
-            mapperService.getSecurityDocumentation().getPaths().forEach((urlPath, pathitem) ->{
-                if (pathMatcher.match(pattern, urlPath)){
-                    mapperService.setOperationMultipleAuthorities(authoritiesList, pathitem);
-                }
-            });
-        });
-        return this;
+        httpSecurity.getSecurityMapperService().assignPermissionArrayToPatterns(patterns, authorities);
+        return this.newInstance();
     }
 
+    public AntMatchingConfigurer authenticated(){
+        httpSecurity.getSecurityMapperService().authenticatePattern(patterns);
+        return this.newInstance();
+    }
     public HttpSecurity and(){
         return httpSecurity;
     }

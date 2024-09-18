@@ -1,32 +1,31 @@
 package com.damzxyno.rasdspringapi.securitycask;
 
 import com.damzxyno.rasdspringapi.core.services.SecurityMapperService;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 
 public class HttpSecurity extends AbstractSecurityBuilder<SecurityFilterChain>{
     private CSRFConfigurer csrfConfigurer;
     private AntMatchingConfigurer antMatchingConfigurer;
     private final SecurityMapperService mapperService;
-    private PathMatcher pathMatcher;
 
     public HttpSecurity(SecurityMapperService mapperService){
         super(new SecurityFilterChain());
         this.mapperService = mapperService;
-        this.pathMatcher =  new AntPathMatcher();
     }
 
+    public SecurityMapperService getSecurityMapperService(){
+        return this.mapperService;
+    }
 
     public CSRFConfigurer csrf(){
         if (csrfConfigurer == null){
-            csrfConfigurer = new CSRFConfigurer(this, mapperService);
+            csrfConfigurer = new CSRFConfigurer(this);
         }
         return csrfConfigurer;
     };
 
     public AntMatchingConfigurer authorizeHttpRequests (){
         if (antMatchingConfigurer == null){
-            antMatchingConfigurer = new AntMatchingConfigurer(this, pathMatcher, mapperService);
+            antMatchingConfigurer = new AntMatchingConfigurer(this);
         }
         return antMatchingConfigurer;
     }

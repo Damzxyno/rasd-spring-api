@@ -1,6 +1,7 @@
 package com.damzxyno.rasdspringapi.api;
 
 import com.damzxyno.rasdspringapi.core.services.ReportingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class AuthorizationReportingWebMvcResource {
             value = {"${authorisation-report.api-docs.path:#{T(com.damzxyno.rasdspringapi.utils.Constants).DEFAULT_API_DOCS_URL}}"},
             produces = {"application/json"}
     )
-    public String authorizationReportJson(HttpServletRequest request) {
+    public String authorizationReportJson(HttpServletRequest request) throws JsonProcessingException {
         return reportingService.getAuthorisationReport(request);
     }
 }

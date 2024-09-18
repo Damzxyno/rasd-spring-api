@@ -8,7 +8,7 @@ import javax.tools.ToolProvider;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 
-public class Runner {
+public class DynamicCompilerRunner {
 
     public void run(String packageName, String className, String sourceCode, HttpSecurity httpSecurity) {
         try {

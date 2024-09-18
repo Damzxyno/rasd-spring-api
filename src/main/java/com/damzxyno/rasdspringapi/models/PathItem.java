@@ -6,6 +6,12 @@ public class PathItem {
     private String description = null;
     private Operation get = null;
     private Operation put = null;
+    private Operation post = null;
+    private Operation delete = null;
+    private Operation options = null;
+    private Operation head = null;
+    private Operation patch = null;
+    private Operation trace = null;
 
     public String getSummary() {
         return summary;
@@ -87,10 +93,4 @@ public class PathItem {
         this.trace = trace;
     }
 
-    private Operation post = null;
-    private Operation delete = null;
-    private Operation options = null;
-    private Operation head = null;
-    private Operation patch = null;
-    private Operation trace = null;
 }

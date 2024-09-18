@@ -1,16 +1,20 @@
 package com.damzxyno.rasdspringapi.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Operation {
+    private AuthorisationMod authorisationMod = null;
+    private Set<String> tags = null;
+    private String summary = null;
     private boolean isAuthenticated;
 
     @JsonIgnore
     private boolean readOnly;
 
-    public void setAuthorisationMod(Authorisation authorisationMod) {
-        this.authorisationMod = authorisationMod;
-    }
 
     public boolean isReadOnly() {
         return readOnly;
@@ -19,16 +23,46 @@ public class Operation {
     public void setReadOnly() {
         this.readOnly = true;
     }
-    private Authorisation authorisationMod = new Authorisation();
 
     public boolean isAuthenticated() {
         return isAuthenticated;
     }
+
     public void setAuthenticated(boolean authenticated) {
         isAuthenticated = authenticated;
     }
 
-    public Authorisation getAuthorisationMod() {
+    public AuthorisationMod getAuthorisationMod() {
+        if (authorisationMod == null){
+            this.authorisationMod = new AuthorisationMod();
+        }
         return authorisationMod;
+    }
+
+    public Set<String> getTags() {
+        if (this.tags == null) {
+            this.tags = new HashSet<>();
+        }
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+    public Operation addTagsItem(String tagsItem) {
+        if (this.tags == null) {
+            this.tags = new HashSet<>();
+        }
+
+        this.tags.add(tagsItem);
+        return this;
     }
 }

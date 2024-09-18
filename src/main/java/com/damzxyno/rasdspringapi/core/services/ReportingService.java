@@ -1,13 +1,11 @@
 package com.damzxyno.rasdspringapi.core.services;
 
-import com.damzxyno.rasdspringapi.models.RASDSpecification;
-import com.damzxyno.rasdspringapi.securitycask.HttpSecurity;
+import com.damzxyno.rasdspringapi.utils.RASDSpecification;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.damzxyno.rasdspringapi.models.RASD;
-import com.damzxyno.rasdspringapi.models.RASDSpecBuilder;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.damzxyno.rasdspringapi.utils.RASDSpecBuilder;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -22,36 +20,44 @@ import java.util.logging.Logger;
 public class ReportingService implements ApplicationContextAware {
     private Logger logger = Logger.getLogger(ReportingService.class.getName());
 
-    private ControllerClassDocProvider controllerDocProvider;
-    private ConfigurationClassDocProvider configDocProvider;
+    private final ControllerClassDocProvider controllerDocProvider;
+    private final ConfigurationClassDocProvider configDocProvider;
+    private final ProvisionalClassDocProvider provisionalDocProvider;
+    private final SecurityMapperService securityMapperService;
     private final ObjectMapper objectMapper;
     private ApplicationContext context;
+    private RASD rasdCache;
 
 
     public ReportingService(
             RequestMappingHandlerMapping requestMappingHandlerMapping){
-        controllerDocProvider = new ControllerClassDocProvider(requestMappingHandlerMapping);
-        configDocProvider = new ConfigurationClassDocProvider();
+        this.securityMapperService = new SecurityMapperService();
+        controllerDocProvider = new ControllerClassDocProvider(requestMappingHandlerMapping, securityMapperService);
+        configDocProvider = new ConfigurationClassDocProvider(securityMapperService);
+        provisionalDocProvider = new ProvisionalClassDocProvider(requestMappingHandlerMapping, securityMapperService);
         this.objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
-    public String getAuthorisationReport(HttpServletRequest request) {
-        try {
-            RASD RASD = extractSecurityConfig(request);
-            return objectMapper.writeValueAsString(RASD);
-        } catch (JsonProcessingException ex){
-            logger.log(Level.WARNING, "", ex);
+    public String getAuthorisationReport(HttpServletRequest request) throws JsonProcessingException{
+        RASDSpecification spec = getRASDSPecification();
+        RASD response = null;
+        if (spec.isUseCache() && rasdCache != null){
+            response = rasdCache;
+        } else {
+            response = extractSecurityConfig(request, spec);
+                if (spec.isUseCache()){
+                    rasdCache = response;
+                }
         }
-        return null;
+
+        return objectMapper.writeValueAsString(response);
     }
 
-    private RASD extractSecurityConfig(HttpServletRequest request){
-        RASDSpecification spec = getRASDSPecification();
-        RASD config = new RASD();
-        SecurityMapperService mapperService = new SecurityMapperService(config);
-        controllerDocProvider.inspectRequestMappings(mapperService, spec);
-        configDocProvider.inspectRequestMappings(mapperService);
-        return config;
+    private RASD extractSecurityConfig(HttpServletRequest request, RASDSpecification spec){
+        controllerDocProvider.inspectRequestMappings(spec);
+        configDocProvider.inspectRequestMappings();
+        provisionalDocProvider.inspectRequestMappings(spec);
+        return securityMapperService.getSecurityDocumentation();
     }
 
     private RASDSpecification getRASDSPecification() {
@@ -61,6 +67,7 @@ public class ReportingService implements ApplicationContextAware {
         } catch (Exception ex){
         }
         return RASDSpecBuilder.getINSTANCE()
+                .useCache()
                 .hideSpringInternals()
                 .hideOpenApiInternals()
                 .build();
@@ -71,5 +78,6 @@ public class ReportingService implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
         this.configDocProvider.setApplicationContext(context);
+        this.provisionalDocProvider.setApplicationContext(context);
     }
 }

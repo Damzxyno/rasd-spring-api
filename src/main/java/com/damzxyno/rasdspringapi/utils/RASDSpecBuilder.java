@@ -1,20 +1,15 @@
-package com.damzxyno.rasdspringapi.models;
+package com.damzxyno.rasdspringapi.utils;
 
 import java.util.Set;
 
 public class RASDSpecBuilder {
-    private static RASDSpecBuilder INSTANCE;
     private RASDSpecification spec;
     private RASDSpecBuilder() {
         spec = new RASDSpecification();
     };
 
     public static RASDSpecBuilder getINSTANCE(){
-        if (INSTANCE == null){
-            INSTANCE = new RASDSpecBuilder();
-
-        }
-        return INSTANCE;
+        return new RASDSpecBuilder();
     }
 
 
@@ -37,5 +32,10 @@ public class RASDSpecBuilder {
 
     public RASDSpecification build(){
         return this.spec;
+    }
+
+    public RASDSpecBuilder useCache() {
+        spec.setUseCache(true);
+        return this;
     }
 }

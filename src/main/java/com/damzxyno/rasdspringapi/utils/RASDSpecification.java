@@ -1,4 +1,4 @@
-package com.damzxyno.rasdspringapi.models;
+package com.damzxyno.rasdspringapi.utils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +7,8 @@ public class RASDSpecification {
     private boolean hideSpringInternals;
     private boolean hideOpenApiInternals;
     private Set<String> excludedPackages = new HashSet<>();
+
+    private boolean useCache;
 
     public boolean isHideSpringInternals() {
         return hideSpringInternals;
@@ -30,5 +32,13 @@ public class RASDSpecification {
 
     public void setExcludedPackages(Set<String> excludedPackages) {
         this.excludedPackages = excludedPackages;
+    }
+
+    public boolean isUseCache() {
+        return useCache;
+    }
+
+    public void setUseCache(boolean useCache) {
+        this.useCache = useCache;
     }
 }
