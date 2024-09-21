@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 @Service
 public class ReportingService implements ApplicationContextAware {
     private Logger logger = Logger.getLogger(ReportingService.class.getName());

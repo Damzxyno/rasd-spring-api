@@ -13,14 +13,11 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import java.util.*;
 
 public class SecuritySpELHandler {
-    private final SpelParserConfiguration config;
     private final SpelExpressionParser parser;
     private static SecuritySpELHandler INSTANCE;
 
     private SecuritySpELHandler(){
-        config =  new SpelParserConfiguration(true, true);
-        parser =  new SpelExpressionParser(config);
-
+        parser =  new SpelExpressionParser(new SpelParserConfiguration(true, true));
     }
 
     public static synchronized SecuritySpELHandler getInstance(){
@@ -84,15 +81,13 @@ public class SecuritySpELHandler {
             }
         }
 
-
         return mod;
-
     }
 
 
     private void addNodeStringChildrenToSet(SpelNode node, Set<String> set){
         for (int i = 0; i < node.getChildCount(); i++){
-            set.add(((StringLiteral)node.getChild(i)).getOriginalValue());
+            set.add(((StringLiteral)node.getChild(i)).getOriginalValue().replaceAll("'", ""));
         }
     }
 

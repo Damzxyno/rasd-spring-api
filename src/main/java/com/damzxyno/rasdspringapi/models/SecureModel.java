@@ -93,7 +93,13 @@ public class SecureModel {
         timeRulesRestrict.put(day, timeRange);
     }
 
-    public void addRestrictAcceptTimeRanges(EnumMap<DayOfWeek, TimeRange> timeRules){
+    public void addAcceptedTimeRanges(EnumMap<DayOfWeek, TimeRange> timeRules){
+        if (timeRulesAccept == null) {
+            timeRulesAccept = new EnumMap<>(DayOfWeek.class);
+        }
+        timeRulesAccept.putAll(timeRules);
+    }
+    public void addRestrictedTimeRanges(EnumMap<DayOfWeek, TimeRange> timeRules){
         if (timeRulesRestrict == null) {
             timeRulesRestrict = new EnumMap<>(DayOfWeek.class);
         }

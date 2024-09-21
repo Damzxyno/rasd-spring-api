@@ -7,8 +7,10 @@ public class RASDSpecification {
     private boolean hideSpringInternals;
     private boolean hideOpenApiInternals;
     private Set<String> excludedPackages = new HashSet<>();
-
     private boolean useCache;
+
+
+
 
     public boolean isHideSpringInternals() {
         return hideSpringInternals;

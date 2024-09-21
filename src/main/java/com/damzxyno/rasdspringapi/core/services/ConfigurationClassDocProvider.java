@@ -61,7 +61,6 @@ public class ConfigurationClassDocProvider {
     private String removeSpecifiedAnnotations(String classFileContent) {
         // Regular expression to match specific annotations
         String regex = "(?m)@Configuration\\s*|@EnableWebSecurity\\s*|@EnableMethodSecurity\\s*|@Bean\\s*";
-//        String regex = "(?m)@EnableWebSecurity\\s*|@EnableMethodSecurity\\s*|@Bean\\s*";
 
         // Remove the specified annotations and any trailing whitespace or newlines
         return classFileContent.replaceAll(regex, "")

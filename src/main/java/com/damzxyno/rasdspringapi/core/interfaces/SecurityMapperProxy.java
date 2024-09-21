@@ -14,3 +14,5 @@ public interface SecurityMapperProxy {
     void addTimeRestricted (String [] pattern, RequestMethod method, EnumMap<DayOfWeek, TimeRange> restrictedTime);
 
 }
+
+

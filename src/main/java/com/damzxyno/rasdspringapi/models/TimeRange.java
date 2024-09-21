@@ -5,8 +5,10 @@ import java.time.format.DateTimeFormatter;
 
 public class TimeRange {
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private final String startTime;
-    private final String endTime;
+    private String startTime;
+    private String endTime;
+
+    public TimeRange(){}
 
     public TimeRange(LocalTime startTime, LocalTime endTime) {
         this.startTime = startTime.format(formatter);

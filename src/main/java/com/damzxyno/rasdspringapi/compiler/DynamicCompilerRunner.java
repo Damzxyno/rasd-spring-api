@@ -15,7 +15,8 @@ public class DynamicCompilerRunner {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             InMemoryFileManager fileManager = new InMemoryFileManager(compiler.getStandardFileManager(null, null, null));
             JavaSourceFromString javaSource = new JavaSourceFromString(packageName + "." + className, sourceCode);
-            JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null, Collections.singletonList(javaSource));
+            JavaCompiler.CompilationTask task = compiler.getTask(
+                    null, fileManager, null, null, null, Collections.singletonList(javaSource));
             boolean success = task.call();
 
             if (success) {

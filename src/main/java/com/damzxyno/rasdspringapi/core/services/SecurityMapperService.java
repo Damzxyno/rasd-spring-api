@@ -283,14 +283,14 @@ public class SecurityMapperService implements SecurityMapperProxy {
     @Override
     public void addTimeAccepted(String [] patterns, RequestMethod method, EnumMap<DayOfWeek, TimeRange> acceptedTime) {
         processPatterns(patterns, (pathItem) -> processOperationByMethod(pathItem, method, (operation) -> {
-            operation.getAuthorisationMod().getStaticMod().addRestrictAcceptTimeRanges(acceptedTime);
+            operation.getAuthorisationMod().getStaticMod().addAcceptedTimeRanges(acceptedTime);
         } ));
     }
 
     @Override
     public void addTimeRestricted(String [] patterns, RequestMethod method, EnumMap<DayOfWeek, TimeRange> restrictedTime) {
         processPatterns(patterns, (pathItem) -> processOperationByMethod(pathItem, method, (operation) -> {
-            operation.getAuthorisationMod().getStaticMod().addRestrictAcceptTimeRanges(restrictedTime);
+            operation.getAuthorisationMod().getStaticMod().addRestrictedTimeRanges(restrictedTime);
         } ));
     }
 
