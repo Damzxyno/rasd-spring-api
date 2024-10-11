@@ -20,3 +20,4 @@ public class JavaSourceFromString extends SimpleJavaFileObject {
         return sourceCode;
     }
 }
+

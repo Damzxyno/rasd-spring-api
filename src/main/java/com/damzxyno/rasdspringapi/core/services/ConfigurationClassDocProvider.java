@@ -4,7 +4,7 @@ import com.damzxyno.rasdspringapi.securitycask.HttpSecurity;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
-import com.damzxyno.rasdspringapi.compiler.Runner;
+import com.damzxyno.rasdspringapi.compiler.DynamicCompilerRunner;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -21,12 +21,14 @@ import java.util.Set;
 
 public class ConfigurationClassDocProvider {
     private ApplicationContext context;
-    private Runner runner;
-    public ConfigurationClassDocProvider() {
-        this.runner = new Runner();
+    private SecurityMapperService securityMapperService;
+    private DynamicCompilerRunner runner;
+    public ConfigurationClassDocProvider(SecurityMapperService securityMapperService) {
+        this.securityMapperService = securityMapperService;
+        this.runner = new DynamicCompilerRunner();
     }
 
-    public void inspectRequestMappings(SecurityMapperService mapperService) {
+    public void inspectRequestMappings() {
         Set<String> securityConfigClassNames = findSecurityFilterChainBeanClassName();
         securityConfigClassNames.forEach(className -> {
             String packageName = "com.damzxyno.rasdspringapi.securitycask";
@@ -34,8 +36,7 @@ public class ConfigurationClassDocProvider {
             classFileContent = removeSpecifiedAnnotations(classFileContent);
             classFileContent = replacePackageDeclaration(classFileContent, packageName);
             classFileContent = removeSpringSecurityImports(classFileContent);
-            System.out.println(classFileContent);
-            HttpSecurity httpSecurity = new HttpSecurity(mapperService);
+            HttpSecurity httpSecurity = new HttpSecurity(securityMapperService);
             runner.run(packageName, extractClassName(className), classFileContent, httpSecurity);
         });
     }
@@ -60,7 +61,6 @@ public class ConfigurationClassDocProvider {
     private String removeSpecifiedAnnotations(String classFileContent) {
         // Regular expression to match specific annotations
         String regex = "(?m)@Configuration\\s*|@EnableWebSecurity\\s*|@EnableMethodSecurity\\s*|@Bean\\s*";
-//        String regex = "(?m)@EnableWebSecurity\\s*|@EnableMethodSecurity\\s*|@Bean\\s*";
 
         // Remove the specified annotations and any trailing whitespace or newlines
         return classFileContent.replaceAll(regex, "")
@@ -78,7 +78,7 @@ public class ConfigurationClassDocProvider {
     }
 
 
-    public Set<String> findSecurityFilterChainBeanClassName() {
+    private Set<String> findSecurityFilterChainBeanClassName() {
         AbstractApplicationContext abstractContext = (AbstractApplicationContext)context;
         String[] beanNames = context.getBeanNamesForType(SecurityFilterChain.class);
         Set<String> securityConfigClasses = new HashSet<>();

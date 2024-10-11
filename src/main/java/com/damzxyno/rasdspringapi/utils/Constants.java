@@ -1,5 +1,5 @@
 package com.damzxyno.rasdspringapi.utils;
 
 public class Constants {
-    public final static String DEFAULT_API_DOCS_URL = "/authorisation-report";
+    public final static String DEFAULT_API_DOCS_URL = "/rasd/authorisation-report";
 }

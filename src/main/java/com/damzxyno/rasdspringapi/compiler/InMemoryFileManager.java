@@ -5,9 +5,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class InMemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {
-
-    private Map<String, JavaClassAsBytes> compiledClasses;
-    private ClassLoader loader;
+    private final Map<String, JavaClassAsBytes> compiledClasses;
+    private final ClassLoader loader;
 
     public InMemoryFileManager(StandardJavaFileManager standardManager) {
         super(standardManager);
@@ -18,7 +17,6 @@ public class InMemoryFileManager extends ForwardingJavaFileManager<JavaFileManag
     @Override
     public JavaFileObject getJavaFileForOutput(Location location,
                                                String className, JavaFileObject.Kind kind, FileObject sibling) {
-
         JavaClassAsBytes classAsBytes = new JavaClassAsBytes(className, kind);
         compiledClasses.put(className, classAsBytes);
 
