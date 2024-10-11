@@ -129,17 +129,11 @@ public class SecureModel {
         return permissions;
     }
 
-    public boolean equalsThisSecureModel (SecureModel secureModel){
-        for(String role : secureModel.roles){
-            if (!this.roles.contains(role)){
-                return false;
-            }
-        };
-        for (String permission : secureModel.getPermissions()){
-            if (!this.permissions.contains(permission)){
-                return false;
-            }
-        }
-        return true;
+    public boolean equalsThisSecureModel (SecureModel secureModelA){
+        return secureModelA.getPermissions().equals(this.permissions) &&
+                secureModelA.getRoles().equals(this.roles);
+
     }
+
+
 }
